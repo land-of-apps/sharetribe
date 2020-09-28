@@ -9,8 +9,8 @@ services:
 
 before_script:
 - nvm install 10.15
-- nvm use 10.15
 - npm install
+- sudo apt-get install sphinxsearch
 - cp config/database.example.yml config/database.yml
 - cp config/config.example.yml config/config.yml
 - bundle exec rake db:create db:structure:load
