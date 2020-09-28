@@ -1,0 +1,23 @@
+# Turn on validation, so we can use import:
+version: ~> 1.0
+
+rvm:
+- 2.6.5
+
+services:
+- mysql
+
+before_script:
+- nvm install 10.15
+- npm install
+- sudo apt-get install sphinxsearch
+- cp config/database.example.yml config/database.yml
+- cp config/config.example.yml config/config.yml
+- bundle exec rake db:create db:structure:load
+- bundle exec rails assets:precompile
+- bundle exec rake ts:index
+- bundle exec rake ts:start
+
+script:
+- bundle exec rspec
+- bundle exec cucumber || true
