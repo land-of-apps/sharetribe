@@ -49,8 +49,8 @@ jobs:
     - true
   - stage: admin_2
     workspaces:
-      create:
-        name: appmaps
+      # create:
+      #   name: appmaps
         paths:
         - tmp/appmap
       use:
@@ -66,21 +66,13 @@ jobs:
     - bundle exec rake db:create db:structure:load
     - bundle exec rake ts:index
     - bundle exec rake ts:start
-    - APPMAP=true bundle exec cucumber features/admin2 || true
-    - APPMAP=true bundle exec cucumber features/common || true
-    - APPMAP=true bundle exec cucumber features/communities || true
-    - APPMAP=true bundle exec cucumber features/conversations || true
-    - APPMAP=true bundle exec cucumber features/email || true
-    - APPMAP=true bundle exec cucumber features/feedback || true
-    - APPMAP=true bundle exec cucumber features/homepage || true
-    - APPMAP=true bundle exec cucumber features/infos || true
-    - APPMAP=true bundle exec cucumber features/invitations || true
+    - APPMAP=true bundle exec cucumber features/admin2 features/common features/communities features/conversations features/email features/feedback features/homepage features/infos features/invitations || true
     after_script:
     - true
   - stage: rest_of_cucumber
     workspaces:
-      create:
-        name: appmaps
+      # create:
+      #   name: appmaps
         paths:
         - tmp/appmap
       use:
@@ -96,15 +88,7 @@ jobs:
     - bundle exec rake db:create db:structure:load
     - bundle exec rake ts:index
     - bundle exec rake ts:start
-    - APPMAP=true bundle exec cucumber features/listings || true
-    - APPMAP=true bundle exec cucumber features/payments || true
-    - APPMAP=true bundle exec cucumber features/paypal || true
-    - APPMAP=true bundle exec cucumber features/people || true
-    - APPMAP=true bundle exec cucumber features/sessions || true
-    - APPMAP=true bundle exec cucumber features/settings || true
-    - APPMAP=true bundle exec cucumber features/step_definitions || true
-    - APPMAP=true bundle exec cucumber features/stripe || true
-    - APPMAP=true bundle exec cucumber features/support || true
+    - APPMAP=true bundle exec cucumber features/listings features/payments features/paypal features/people features/sessions features/settings features/step_definitions features/stripe features/support || true
     after_script:
     - true
   - stage: upload
