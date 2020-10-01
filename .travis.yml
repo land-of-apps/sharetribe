@@ -49,8 +49,6 @@ jobs:
     - true
   - stage: admin_2
     workspaces:
-      # create:
-      #   name: appmaps
         paths:
         - tmp/appmap
       use:
@@ -71,8 +69,6 @@ jobs:
     - true
   - stage: rest_of_cucumber
     workspaces:
-      # create:
-      #   name: appmaps
         paths:
         - tmp/appmap
       use:
