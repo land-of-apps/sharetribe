@@ -3,6 +3,7 @@
 require_relative 'boot'
 
 require 'rails/all'
+require 'appmap/railtie'
 
 # These needed to load the config.yml
 require File.expand_path('../config_loader', __FILE__)

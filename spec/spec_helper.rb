@@ -1,3 +1,5 @@
+require 'appmap/rspec'
+
 require 'spec_utils'
 require 'rubygems'
 

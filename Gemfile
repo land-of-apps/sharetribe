@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 ruby '2.6.5'
 
+gem 'appmap', github: 'applandinc/appmap-ruby', branch: 'master'
+
 gem 'rails', '5.2.4.3'
 
 gem 'coffee-rails', '~> 4.2.2'

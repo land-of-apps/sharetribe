@@ -1,3 +1,13 @@
+if AppMap::Cucumber.enabled?
+  Around('not @appmap-disable') do |scenario, block|
+    appmap = AppMap.record do
+      block.call
+    end
+
+    AppMap::Cucumber.write_scenario(scenario, appmap)
+  end
+end
+
 Before do
   Capybara.default_host = 'http://test.lvh.me:9887'
   Capybara.server_port = 9887

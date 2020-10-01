@@ -7,17 +7,111 @@ rvm:
 services:
 - mysql
 
-before_script:
-- nvm install 10.15
-- npm install
-- sudo apt-get install sphinxsearch
-- cp config/database.example.yml config/database.yml
-- cp config/config.example.yml config/config.yml
-- bundle exec rake db:create db:structure:load
-- bundle exec rails assets:precompile
-- bundle exec rake ts:index
-- bundle exec rake ts:start
+import:
+- land-of-apps/land-of-apps:travis/ruby-imports.yml
 
-script:
-- bundle exec rspec
-- bundle exec cucumber || true
+jobs:
+  include:
+  - stage: rspec_admin
+    workspaces:
+      create:
+        name: assets
+        paths:
+        - vendor/bundle
+        - public/assets
+        - public/packs-test
+        - node_modules
+        - app/javascript/packages/*/node_modules
+    install:
+    - bundle config path vendor/bundle
+    - bundle install --jobs 3 --retry 3
+    - bundle update appmap
+    - nvm install 10.15
+    - npm install
+    - sudo apt-get install sphinxsearch
+    script:
+    - cp config/database.example.yml config/database.yml
+    - cp config/config.example.yml config/config.yml
+    - bundle exec rails assets:precompile
+    - bundle exec rake db:create db:structure:load
+    - bundle exec rake ts:index
+    - bundle exec rake ts:start
+    - APPMAP=true bundle exec rspec || true
+    - APPMAP=true bundle exec cucumber features/admin || true
+
+    # remove problematic appmaps until patch
+    # - cd /home/travis/build/land-of-apps/sharetribe/tmp/appmap/rspec
+    # - rm PeopleController_show_shows_specific_meta_title_and_description.appmap.json
+    # - rm PeopleController_show_works.appmap.json
+    # - cd ../../..
+    #
+    after_script:
+    - true
+  - stage: admin_2
+    workspaces:
+      create:
+        name: appmaps
+        paths:
+        - tmp/appmap
+      use:
+      - assets
+    before_script:
+    - nvm install 10.15
+    - npm install
+    - sudo apt-get install sphinxsearch
+    script:
+    - cp config/database.example.yml config/database.yml
+    - cp config/config.example.yml config/config.yml
+    - bundle exec rails assets:precompile
+    - bundle exec rake db:create db:structure:load
+    - bundle exec rake ts:index
+    - bundle exec rake ts:start
+    - APPMAP=true bundle exec cucumber features/admin2 || true
+    - APPMAP=true bundle exec cucumber features/common || true
+    - APPMAP=true bundle exec cucumber features/communities || true
+    - APPMAP=true bundle exec cucumber features/conversations || true
+    - APPMAP=true bundle exec cucumber features/email || true
+    - APPMAP=true bundle exec cucumber features/feedback || true
+    - APPMAP=true bundle exec cucumber features/homepage || true
+    - APPMAP=true bundle exec cucumber features/infos || true
+    - APPMAP=true bundle exec cucumber features/invitations || true
+    after_script:
+    - true
+  - stage: rest_of_cucumber
+    workspaces:
+      create:
+        name: appmaps
+        paths:
+        - tmp/appmap
+      use:
+      - assets
+    before_script:
+    - nvm install 10.15
+    - npm install
+    - sudo apt-get install sphinxsearch
+    script:
+    - cp config/database.example.yml config/database.yml
+    - cp config/config.example.yml config/config.yml
+    - bundle exec rails assets:precompile
+    - bundle exec rake db:create db:structure:load
+    - bundle exec rake ts:index
+    - bundle exec rake ts:start
+    - APPMAP=true bundle exec cucumber features/listings || true
+    - APPMAP=true bundle exec cucumber features/payments || true
+    - APPMAP=true bundle exec cucumber features/paypal || true
+    - APPMAP=true bundle exec cucumber features/people || true
+    - APPMAP=true bundle exec cucumber features/sessions || true
+    - APPMAP=true bundle exec cucumber features/settings || true
+    - APPMAP=true bundle exec cucumber features/step_definitions || true
+    - APPMAP=true bundle exec cucumber features/stripe || true
+    - APPMAP=true bundle exec cucumber features/support || true
+    after_script:
+    - true
+  - stage: upload
+    workspaces:
+      use:
+      - appmaps
+    install:
+    - true
+    script:
+    - true
