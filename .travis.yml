@@ -49,8 +49,6 @@ jobs:
     - true
   - stage: admin_2
     workspaces:
-        paths:
-        - tmp/appmap
       use:
       - assets
     before_script:
@@ -69,8 +67,6 @@ jobs:
     - true
   - stage: rest_of_cucumber
     workspaces:
-        paths:
-        - tmp/appmap
       use:
       - assets
     before_script:
