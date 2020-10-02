@@ -12,7 +12,7 @@ import:
 
 jobs:
   include:
-  - stage: rspec_admin
+  - stage: rspec
     workspaces:
       create:
         name: assets
@@ -37,14 +37,24 @@ jobs:
     - bundle exec rake ts:index
     - bundle exec rake ts:start
     - APPMAP=true bundle exec rspec || true
+    after_script:
+    - true
+  - stage: admin
+    workspaces:
+      use:
+        - assets
+    before_script:
+    - nvm install 10.15
+    - npm install
+    - sudo apt-get install sphinxsearch
+    script:
+    - cp config/database.example.yml config/database.yml
+    - cp config/config.example.yml config/config.yml
+    - bundle exec rails assets:precompile
+    - bundle exec rake db:create db:structure:load
+    - bundle exec rake ts:index
+    - bundle exec rake ts:start
     - APPMAP=true bundle exec cucumber features/admin || true
-
-    # remove problematic appmaps until patch
-    # - cd /home/travis/build/land-of-apps/sharetribe/tmp/appmap/rspec
-    # - rm PeopleController_show_shows_specific_meta_title_and_description.appmap.json
-    # - rm PeopleController_show_works.appmap.json
-    # - cd ../../..
-    #
     after_script:
     - true
   - stage: admin_2
