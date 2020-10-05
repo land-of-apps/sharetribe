@@ -38,7 +38,7 @@ jobs:
     - bundle exec rake ts:index
     - bundle exec rake ts:start
     - APPMAP=true bundle exec rspec spec/controllers/admin/admin_base_controller_spec.rb || true 
-    - APPMAP=true bundle exec cucumber features/email || true
+    - APPMAP=true bundle exec cucumber features/invitations/user_invites_another_user.feature || true
     after_script:
     - true
   - stage: upload
