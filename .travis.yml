@@ -37,14 +37,94 @@ jobs:
     - bundle exec rake db:create db:structure:load
     - bundle exec rake ts:index
     - bundle exec rake ts:start
-    - APPMAP=true bundle exec rspec spec/controllers/admin/admin_base_controller_spec.rb || true 
+
+    # testing
+    - APPMAP=true bundle exec rspec spec/controllers/admin/admin_base_controller_spec.rb || true
+    #- APPMAP=true bundle exec rspec || true
+    after_script:
+    - true
+  - stage: admin
+    workspaces:
+      use:
+        - appmaps
+      create:
+        name: appmaps_1
+        paths:
+        - tmp/appmap
+    before_script:
+    - nvm install 10.15
+    - npm install
+    - sudo apt-get install sphinxsearch
+    script:
+    - cp config/database.example.yml config/database.yml
+    - cp config/config.example.yml config/config.yml
+    - bundle exec rails assets:precompile
+    - bundle exec rake db:create db:structure:load
+    - bundle exec rake ts:index
+    - bundle exec rake ts:start
+
+    # testing
+    - APPMAP=true bundle exec cucumber features/common || true
+    #- APPMAP=true bundle exec cucumber features/admin || true
+    after_script:
+    - true
+  - stage: admin_2
+    workspaces:
+      use:
+      - appmaps
+      create:
+        name: appmaps_2
+        paths:
+        - tmp/appmap
+    before_script:
+    - nvm install 10.15
+    - npm install
+    - sudo apt-get install sphinxsearch
+    script:
+    - cp config/database.example.yml config/database.yml
+    - cp config/config.example.yml config/config.yml
+    - bundle exec rails assets:precompile
+    - bundle exec rake db:create db:structure:load
+    - bundle exec rake ts:index
+    - bundle exec rake ts:start
+
+    # true
+    - APPMAP=true bundle exec cucumber features/communities/update_mails.feature || true
+    #- APPMAP=true bundle exec cucumber features/admin2 features/common features/communities features/conversations features/email features/feedback features/homepage features/infos features/invitations || true
+    after_script:
+    - true
+  - stage: rest_of_cucumber
+    workspaces:
+      use:
+      - appmaps
+      create:
+        name: appmaps_3
+        paths:
+        - tmp/appmap
+    before_script:
+    - nvm install 10.15
+    - npm install
+    - sudo apt-get install sphinxsearch
+    script:
+    - cp config/database.example.yml config/database.yml
+    - cp config/config.example.yml config/config.yml
+    - bundle exec rails assets:precompile
+    - bundle exec rake db:create db:structure:load
+    - bundle exec rake ts:index
+    - bundle exec rake ts:start
+
+    # testing
     - APPMAP=true bundle exec cucumber features/invitations/user_invites_another_user.feature || true
+    #- APPMAP=true bundle exec cucumber features/listings features/payments features/paypal features/people features/sessions features/settings features/step_definitions features/stripe features/support || true
     after_script:
     - true
   - stage: upload
     workspaces:
       use:
       - appmaps
+      - appmaps_1
+      - appmaps_2
+      - appmaps_3
     install:
     - true
     script:
