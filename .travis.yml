@@ -37,10 +37,7 @@ jobs:
     - bundle exec rake db:create db:structure:load
     - bundle exec rake ts:index
     - bundle exec rake ts:start
-
-    # testing
-    - APPMAP=true bundle exec rspec spec/controllers/admin/admin_base_controller_spec.rb || true
-    #- APPMAP=true bundle exec rspec || true
+    - APPMAP=true bundle exec rspec || true
     after_script:
     - true
   - stage: admin
@@ -58,10 +55,7 @@ jobs:
     - bundle exec rake db:create db:structure:load
     - bundle exec rake ts:index
     - bundle exec rake ts:start
-
-    # testing
-    - APPMAP=true bundle exec cucumber features/admin/act_as_person/admin_creates_new_listing.feature || true
-    #- APPMAP=true bundle exec cucumber features/admin || true
+    - APPMAP=true bundle exec cucumber features/admin || true
     after_script:
     - true
   - stage: admin_2
@@ -79,10 +73,7 @@ jobs:
     - bundle exec rake db:create db:structure:load
     - bundle exec rake ts:index
     - bundle exec rake ts:start
-
-    # testing
-    - APPMAP=true bundle exec ccumber features/admin2/admin_add_listing_fields.feature || true
-    #- APPMAP=true bundle exec cucumber features/admin2 features/common features/communities features/conversations features/email features/feedback features/homepage features/infos features/invitations || true
+    - APPMAP=true bundle exec cucumber features/admin2 features/common features/communities features/conversations features/email features/feedback features/homepage features/infos features/invitations || true
     after_script:
     - true
   - stage: rest_of_cucumber
@@ -100,10 +91,7 @@ jobs:
     - bundle exec rake db:create db:structure:load
     - bundle exec rake ts:index
     - bundle exec rake ts:start
-
-    # testing
-    - APPMAP=true bundle exec cucumber features/listings/search.feature || true
-    #- APPMAP=true bundle exec cucumber features/listings features/payments features/paypal features/people features/sessions features/settings features/step_definitions features/stripe features/support || true
+    - APPMAP=true bundle exec cucumber features/listings features/payments features/paypal features/people features/sessions features/settings features/step_definitions features/stripe features/support || true
     after_script:
     - true
   - stage: upload
